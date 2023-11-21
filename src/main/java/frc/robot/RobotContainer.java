@@ -6,9 +6,9 @@ package frc.robot;
 
 
 import java.util.List;
-import com.pathplanner.lib.*;
+//import com.pathplanner.lib.*;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.*;
+//import com.pathplanner.lib.commands.*;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
