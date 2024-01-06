@@ -1,18 +1,14 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 
 import java.util.List;
-//import com.pathplanner.lib.*;
-import com.pathplanner.lib.auto.AutoBuilder;
-//import com.pathplanner.lib.commands.*;
-import com.pathplanner.lib.path.PathConstraints;
+
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.commands.FollowPathRamsete;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -44,7 +40,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Subsystems.Pathplanner;
 import frc.robot.Subsystems.Swerve;
 import frc.robot.Commands.toggleSpeed;
 
@@ -78,7 +73,7 @@ public class RobotContainer {
   /* Subsystems */
   private final Swerve s_Swerve = new Swerve();
 
-  private final SendableChooser<Command> m_Chooser = new SendableChooser<>();
+  private final SendableChooser<Command> chooser;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and Commands. */
@@ -91,6 +86,8 @@ public class RobotContainer {
             () -> -driver.getRawAxis(strafeAxis),
             () -> driver.getRawAxis(rotationAxis)));
 
+    chooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto:", chooser);
     // Configure the button bindings
     configureButtonBindings();  
   }
@@ -102,8 +99,7 @@ public class RobotContainer {
    */
   
   private void configureButtonBindings() {
-        m_Chooser.addOption("Nothing", new InstantCommand());
-        SmartDashboard.putData("Auto Chooser", m_Chooser);  
+       
     /* Driver Buttons */
     driver.back().toggleOnTrue(
       new toggleSpeed(
@@ -126,7 +122,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     s_Swerve.zeroHeading();
     s_Swerve.resetModulesToAbsolute();
-    PathPlannerPath path = PathPlannerPath.fromPathFile("new path");
-    return AutoBuilder.followPathWithEvents(path);
+    return chooser.getSelected();
+    //return null;
   }
 }
